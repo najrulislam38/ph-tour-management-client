@@ -61,10 +61,15 @@ export function RegisterForm({
       email: data.email,
       password: data.password,
     };
+    console.log(userInfo);
+
     try {
       const result = await register(userInfo).unwrap();
       console.log(result);
-      toast.success("User created successfully");
+      if (result.success) {
+        toast.success("User created successfully");
+        form.reset();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -90,7 +95,7 @@ export function RegisterForm({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input placeholder="John Due" {...field} />
                   </FormControl>
@@ -106,9 +111,13 @@ export function RegisterForm({
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>john.due@mail.com</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Name" type="email" {...field} />
+                    <Input
+                      placeholder="john.due@mail.com"
+                      type="email"
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription className="sr-only">
                     This is your public display name.
@@ -150,30 +159,11 @@ export function RegisterForm({
               )}
             />
             <Button type="submit" className="w-full">
-              Submit
+              Register
             </Button>
           </form>
         </Form>
 
-        {/* <div className="grid gap-3">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
-        </div>
-        <div className="grid gap-3">
-          <div className="flex items-center">
-            <Label htmlFor="password">Password</Label>
-            <a
-              href="#"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
-            >
-              Forgot your password?
-            </a>
-          </div>
-          <Input id="password" type="password" required />
-        </div> */}
-        {/* <Button type="submit" className="w-full">
-          Login
-        </Button> */}
         <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
           <span className="bg-background text-muted-foreground relative z-10 px-2">
             Or continue with
@@ -185,9 +175,13 @@ export function RegisterForm({
         </Button>
       </div>
       <div className="text-center text-sm">
-        Don&apos;t have an account?{" "}
-        <Link to={"/register"} className="underline underline-offset-4">
-          Sign up
+        {/* Don&apos;t have an account?{" "} */}
+        Already have an account?{" "}
+        <Link
+          to={"/login"}
+          className="underline font-semibold underline-offset-4"
+        >
+          Sign In
         </Link>
       </div>
     </div>
