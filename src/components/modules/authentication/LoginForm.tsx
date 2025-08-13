@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import googleIcon from "./../../../assets/icons/google.png";
 import { useForm } from "react-hook-form";
 import {
@@ -29,6 +30,7 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"form">) {
   const [login] = useLoginMutation();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -45,12 +47,18 @@ export function LoginForm({
     };
 
     try {
-      const result = await login(userInfo);
-
+      const result = await login(userInfo).unwrap();
       console.log(result);
-      toast.success("Login successful.");
-    } catch (error) {
-      console.log(error);
+      if (result.success) {
+        toast.success("Login successful.");
+        navigate("/");
+      }
+    } catch (error: any) {
+      toast.error("Your account is not verify");
+
+      if (error.status === 401) {
+        navigate("/verify", { state: data?.email });
+      }
     }
   };
 

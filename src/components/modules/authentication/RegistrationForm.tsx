@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 // import { Label } from "@/components/ui/label";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import googleIcon from "./../../../assets/icons/google.png";
 import { useForm } from "react-hook-form";
 import {
@@ -40,6 +40,7 @@ export function RegisterForm({
   ...props
 }: React.ComponentProps<"form">) {
   const [register] = useRegisterMutation();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -69,6 +70,7 @@ export function RegisterForm({
       if (result.success) {
         toast.success("User created successfully");
         form.reset();
+        navigate("/verify", { state: data.email });
       }
     } catch (error) {
       console.log(error);
