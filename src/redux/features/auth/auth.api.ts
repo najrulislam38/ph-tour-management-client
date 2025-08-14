@@ -32,6 +32,12 @@ const authApi = baseApi.injectEndpoints({
         data: userInfo,
       }),
     }),
+    getMe: builder.query({
+      query: () => ({
+        url: "/user/me",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -40,4 +46,5 @@ export const {
   useLoginMutation,
   useSentOtpMutation,
   useVerifyOtpMutation,
+  useGetMeQuery,
 } = authApi;

@@ -20,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Password from "@/components/ui/Password";
 import { useRegisterMutation } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
+import config from "@/config";
 
 const registerSchema = z
   .object({
@@ -160,7 +161,7 @@ export function RegisterForm({
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full cursor-pointer">
               Register
             </Button>
           </form>
@@ -171,8 +172,15 @@ export function RegisterForm({
             Or continue with
           </span>
         </div>
-        <Button variant="outline" className="w-full">
-          <img src={googleIcon} alt="google icon" className="w-8" />
+        <Button
+          onClick={() => {
+            // window.open(`${config.baseUrl}/auth/google`);
+            window.location.href = `${config.baseUrl}/auth/google`;
+          }}
+          variant="outline"
+          className="w-full cursor-pointer"
+        >
+          <img src={googleIcon} alt="google icon" className="w-8 " />
           Login with Google
         </Button>
       </div>
