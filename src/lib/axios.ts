@@ -3,6 +3,7 @@ import axios from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: config.baseUrl,
+  withCredentials: true,
   //   timeout: 1000,
   //   headers: { "X-Custom-Header": "foobar" },
 });
