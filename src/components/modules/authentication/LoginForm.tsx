@@ -54,9 +54,13 @@ export function LoginForm({
         navigate("/");
       }
     } catch (error: any) {
-      toast.error("Your account is not verify");
+      console.log(error);
+      if (error.data.message === "Password didn't matched") {
+        toast.error("Invalid Password");
+      }
 
-      if (error.status === 401) {
+      if (error.data.message === "User is not verified") {
+        toast.error("Your account is not verify");
         navigate("/verify", { state: data?.email });
       }
     }

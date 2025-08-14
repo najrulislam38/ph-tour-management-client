@@ -21,12 +21,13 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { cn } from "@/lib/utils";
 import {
   useSentOtpMutation,
   useVerifyOtpMutation,
 } from "@/redux/features/auth/auth.api";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -45,6 +46,7 @@ export default function Verify() {
   const [confirm, setConfirm] = useState(false);
   const [sendOtp] = useSentOtpMutation();
   const [verifyOtp] = useVerifyOtpMutation();
+  const [timer, setTimer] = useState(120);
 
   const form = useForm<z.infer<typeof OTPFormSchema>>({
     resolver: zodResolver(OTPFormSchema),
@@ -55,11 +57,12 @@ export default function Verify() {
 
   const handleSendOtp = async () => {
     const toastId = toast.loading("Sending OTP");
+    setConfirm(true);
+    setTimer(120);
     try {
       const res = await sendOtp({ email: email }).unwrap();
       if (res.success) {
         toast.success("OTP Sent Successfully.", { id: toastId });
-        setConfirm(true);
       }
     } catch (err) {
       console.log(err);
@@ -78,6 +81,7 @@ export default function Verify() {
 
       if (res.success) {
         toast.success("Your Email Verification Successful.", { id: toastId });
+        setTimer(0);
         navigate("/");
       }
     } catch (err) {
@@ -85,77 +89,42 @@ export default function Verify() {
     }
   };
 
+  useEffect(() => {
+    if (!email) {
+      navigate("/");
+    }
+  }, [email, navigate]);
+
   // useEffect(() => {
-  //   if (!email) {
-  //     navigate("/");
-  //   }
-  // }, [email, navigate]);
+  //   if (!email || !confirm) return;
+
+  //   const timerId = setInterval(() => {
+  //     setTimer((prev) => (prev > 0 ? prev - 1 : 0));
+
+  //     console.log("trick");
+
+  //     return () => clearInterval(timerId);
+  //   }, 1000);
+  // }, [email, confirm]);
+
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (!email || !confirm) return;
+    timerRef.current = setInterval(() => {
+      setTimer((prev) => (prev > 0 ? prev - 1 : 0));
+      console.log("trick");
+    }, 1000);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [email, confirm]);
 
   return (
     <div className="grid place-content-center h-screen">
-      {/* <Card className=" ">
-        <CardHeader>
-          <CardTitle className="text-xl capitalize">
-            Verify your email address
-          </CardTitle>
-          <CardDescription>
-            Please enter the 6-digit code we sent to <br /> {email}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form
-              id="otp-form"
-              onSubmit={form.handleSubmit(onSubmit)}
-              className=" space-y-6"
-            >
-              <FormField
-                control={form.control}
-                name="pin"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>OTP Enter Here</FormLabel>
-                    <FormControl>
-                      <InputOTP maxLength={6} {...field}>
-                        <InputOTPGroup>
-                          <InputOTPSlot index={0} />
-                        </InputOTPGroup>
-                        <InputOTPGroup>
-                          <InputOTPSlot index={1} />
-                        </InputOTPGroup>
-                        <InputOTPGroup>
-                          <InputOTPSlot index={2} />
-                        </InputOTPGroup>
-                        <span className="font-bold tex-xl"> - </span>
-                        <InputOTPGroup>
-                          <InputOTPSlot index={3} />
-                        </InputOTPGroup>
-                        <InputOTPGroup>
-                          <InputOTPSlot index={4} />
-                        </InputOTPGroup>
-                        <InputOTPGroup>
-                          <InputOTPSlot index={5} />
-                        </InputOTPGroup>
-                      </InputOTP>
-                    </FormControl>
-                    <FormDescription>
-                      Please enter the one-time password sent to your phone.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter className="flex justify-center">
-          <Button form="otp-form" type="submit">
-            Submit
-          </Button>
-        </CardFooter>
-      </Card> */}
       {confirm ? (
-        <Card className=" ">
+        <Card className=" min-w-80  ">
           <CardHeader>
             <CardTitle className="text-xl capitalize">
               Verify your email address
@@ -201,7 +170,19 @@ export default function Verify() {
                         </InputOTP>
                       </FormControl>
                       <FormDescription>
-                        Please enter the one-time password sent to your phone.
+                        <Button
+                          onClick={handleSendOtp}
+                          type="button"
+                          variant={"link"}
+                          className={cn(
+                            "p-0 m-0",
+                            timer === 0 ? "cursor-pointer" : "text-gray-500"
+                          )}
+                          disabled={timer !== 0}
+                        >
+                          Resend OTP
+                        </Button>{" "}
+                        {timer}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
