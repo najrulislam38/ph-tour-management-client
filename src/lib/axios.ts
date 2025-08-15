@@ -3,6 +3,11 @@ import axios from "axios";
 
 export const axiosInstance = axios.create({
   baseURL: config.baseUrl,
+  withCredentials: true,
+
+  // headers: {
+  // **  Authorization: "headers er authorizationer maddhome token pathano jay ", **/
+  // },
   //   timeout: 1000,
   //   headers: { "X-Custom-Header": "foobar" },
 });
@@ -11,7 +16,7 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    console.log("Axios", config);
+    // console.log("Axios", config);
 
     return config;
   },
@@ -26,7 +31,7 @@ axiosInstance.interceptors.response.use(
   function onFulfilled(response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
-    console.log("Axios", response);
+    // console.log("Axios", response);
 
     return response;
   },

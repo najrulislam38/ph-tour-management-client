@@ -19,6 +19,7 @@ import { z } from "zod";
 import Password from "@/components/ui/Password";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
+import config from "@/config";
 
 const loginSchema = z.object({
   email: z.email(),
@@ -54,9 +55,13 @@ export function LoginForm({
         navigate("/");
       }
     } catch (error: any) {
-      toast.error("Your account is not verify");
+      console.log(error);
+      if (error.data.message === "Password didn't matched") {
+        toast.error("Invalid Password");
+      }
 
-      if (error.status === 401) {
+      if (error.data.message === "User is not verified") {
+        toast.error("Your account is not verify");
         navigate("/verify", { state: data?.email });
       }
     }
@@ -110,7 +115,7 @@ export function LoginForm({
               )}
             />
 
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full cursor-pointer">
               Log In
             </Button>
           </form>
@@ -120,7 +125,14 @@ export function LoginForm({
             Or continue with
           </span>
         </div>
-        <Button variant="outline" className="w-full">
+        <Button
+          onClick={() => {
+            // window.open(`${config.baseUrl}/auth/google`);
+            window.location.href = `${config.baseUrl}/auth/google`;
+          }}
+          variant="outline"
+          className="w-full cursor-pointer"
+        >
           <img src={googleIcon} alt="google icon" className="w-8" />
           Login with Google
         </Button>
