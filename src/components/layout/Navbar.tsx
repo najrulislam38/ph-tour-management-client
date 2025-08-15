@@ -15,8 +15,8 @@ import { ModeToggle } from "./ModeToggler";
 import { Link } from "react-router";
 import {
   authApi,
-  useGetMeQuery,
   useLogoutMutation,
+  useUserInfoQuery,
 } from "@/redux/features/auth/auth.api";
 import { useDispatch } from "react-redux";
 
@@ -27,7 +27,7 @@ const navigationLinks = [
 ];
 
 export default function Navbar() {
-  const { data } = useGetMeQuery(undefined);
+  const { data } = useUserInfoQuery(undefined);
   const [logout] = useLogoutMutation();
   const dispatch = useDispatch();
 
