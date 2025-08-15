@@ -18,4 +18,16 @@ export interface ISidebarItem {
   }[];
 }
 
-export type IRole = "SUPER_ADMIN" | "ADMIN" | "USER";
+export type TRole = "SUPER_ADMIN" | "ADMIN" | "USER";
+
+// interface IRole {
+//   SUPER_ADMIN: string;
+//   ADMIN: string;
+//   USER: string;
+// }
+
+// export const Role: IRole = {
+//   SUPER_ADMIN: "SUPER_ADMIN",
+//   ADMIN: "ADMIN",
+//   USER: "USER",
+// };
