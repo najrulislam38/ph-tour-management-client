@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,29 +20,39 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useCreateTourTypeMutation } from "@/redux/features/tour/tour.api";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 type TourTypeFormValues = { name: string };
 
 export function AddTourTypeModel() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const form = useForm<TourTypeFormValues>();
-
   const [createTourType] = useCreateTourTypeMutation();
 
   const onSubmit = async (data: TourTypeFormValues) => {
-    const res = await createTourType({ name: data.name });
+    try {
+      const res = await createTourType({ name: data.name });
 
-    if (res?.data?.success) {
-      toast.success("Tour Type Created Successful");
+      if (res?.data?.success) {
+        toast.success("Tour Type Created Successful");
+        form.reset();
+        setIsModalOpen(false);
+      }
+    } catch (error: any) {
+      console.log(error.message);
+      setIsModalOpen(false);
     }
   };
 
+  console.log(isModalOpen);
+
   return (
-    <Dialog>
+    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
       <form id="add-tour-type" onSubmit={form.handleSubmit(onSubmit)}>
         <DialogTrigger asChild>
-          <Button>Add Tour Type</Button>
+          <Button onClick={() => setIsModalOpen(true)}>Add Tour Type</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
