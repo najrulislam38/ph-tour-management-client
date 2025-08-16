@@ -15,8 +15,6 @@ export const withAuth = (Component: ComponentType, requiredRole?: TRole) => {
       return <Navigate to={"/unauthorized"} />;
     }
 
-    console.log(data);
-
     return <Component />;
   };
 };
