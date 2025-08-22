@@ -1,5 +1,5 @@
 import Logo from "@/assets/icons/Logo";
-import { LoginForm } from "@/components/modules/authentication/LoginForm";
+import { LoginForm } from "@/components/modules/Authentication/LoginForm";
 import { Link } from "react-router";
 import loginImage from "./../assets/images/travel-login.jpg";
 

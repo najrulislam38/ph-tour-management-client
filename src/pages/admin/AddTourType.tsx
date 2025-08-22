@@ -1,4 +1,6 @@
-import { AddTourTypeModel } from "@/components/modules/admin/tourType/AddTourTypeModel";
+import { DeleteConfirmation } from "@/components/DeleteConfirmation";
+import { AddTourTypeModel } from "@/components/modules/Admin/TourTypes/AddTourTypeModel";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -7,12 +9,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetAllTourTypesQuery } from "@/redux/features/tour/tour.api";
+import {
+  useGetAllTourTypesQuery,
+  useRemoveTourTypeMutation,
+} from "@/redux/features/tour/tour.api";
 import { Trash2 } from "lucide-react";
 
 export default function AddTourTypes() {
   const { data } = useGetAllTourTypesQuery(undefined);
   console.log(data);
+  const [removeTourType] = useRemoveTourTypeMutation();
+
+  const handleConfirm = async (tourTypeId: string) => {
+    console.log("clicked");
+    try {
+      const res = await removeTourType(tourTypeId);
+      console.log(res);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="w-full mx-auto">
@@ -30,12 +46,16 @@ export default function AddTourTypes() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data?.map((item: { name: string }, index: number) => (
+            {data?.map((item: { _id: string; name: string }, index: number) => (
               <TableRow key={index}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>
-                  <Trash2 className="text-red-700 cursor-pointer" />
+                  <DeleteConfirmation onConfirm={() => handleConfirm(item._id)}>
+                    <Button>
+                      <Trash2 className="text-red-700 cursor-pointer" />
+                    </Button>
+                  </DeleteConfirmation>
                 </TableCell>
               </TableRow>
             ))}

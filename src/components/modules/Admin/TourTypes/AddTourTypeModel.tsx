@@ -46,8 +46,6 @@ export function AddTourTypeModel() {
     }
   };
 
-  console.log(isModalOpen);
-
   return (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
       <form id="add-tour-type" onSubmit={form.handleSubmit(onSubmit)}>
