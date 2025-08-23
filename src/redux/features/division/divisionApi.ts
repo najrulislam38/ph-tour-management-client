@@ -18,15 +18,15 @@ export const divisionApi = baseApi.injectEndpoints({
     //   invalidatesTags: ["TOUR"],
     // }),
 
-    getAllTourTypes: builder.query({
+    getAllDivision: builder.query({
       query: () => ({
-        url: "/tour/tour-types",
+        url: "/division",
         method: "GET",
       }),
-      providesTags: ["TOUR"],
+      providesTags: ["DIVISION"],
       transformResponse: (response) => response.data,
     }),
   }),
 });
 
-export const { useAddDivisionMutation } = divisionApi;
+export const { useAddDivisionMutation, useGetAllDivisionQuery } = divisionApi;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { DeleteConfirmation } from "@/components/DeleteConfirmation";
 import { AddTourTypeModel } from "@/components/modules/Admin/TourTypes/AddTourTypeModel";
 import { Button } from "@/components/ui/button";
@@ -17,14 +18,14 @@ import { Trash2 } from "lucide-react";
 
 export default function AddTourTypes() {
   const { data } = useGetAllTourTypesQuery(undefined);
-  console.log(data);
+  // console.log(data);
   const [removeTourType] = useRemoveTourTypeMutation();
 
   const handleConfirm = async (tourTypeId: string) => {
     console.log("clicked");
     try {
       const res = await removeTourType(tourTypeId);
-      console.log(res);
+      // console.log(res);
     } catch (error) {
       console.error(error);
     }
