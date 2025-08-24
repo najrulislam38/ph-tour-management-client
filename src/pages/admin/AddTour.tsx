@@ -93,8 +93,6 @@ export default function AddTour() {
     })
   );
 
-  console.log(tourTypeOptions);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

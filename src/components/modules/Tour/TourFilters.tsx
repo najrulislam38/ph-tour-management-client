@@ -33,7 +33,7 @@ export default function TourFilters() {
     })
   );
 
-  const tourTypeOptions = tourTypeData?.data?.map(
+  const tourTypeOptions = tourTypeData?.map(
     (item: { _id: string; name: string }) => ({
       label: item.name,
       value: item._id,
@@ -101,7 +101,7 @@ export default function TourFilters() {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectLabel>Divisions</SelectLabel>
+              <SelectLabel>Tour Type</SelectLabel>
               {tourTypeOptions?.map(
                 (item: { value: string; label: string }) => (
                   <SelectItem key={item.value} value={item.value}>
