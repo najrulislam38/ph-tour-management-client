@@ -25,6 +25,7 @@ import { role } from "@/constants/role";
 const navigationLinks = [
   { href: "/", label: "Home", role: "PUBLIC" },
   { href: "/about", label: "About", role: "PUBLIC" },
+  { href: "/tours", label: "Tours", role: "PUBLIC" },
   { href: "/admin", label: "dashboard", role: role.admin },
   { href: "/admin", label: "dashboard", role: role.superAdmin },
   { href: "/user", label: "dashboard", role: role.user },
@@ -46,7 +47,7 @@ export default function Navbar() {
       });
   };
 
-  console.log(data?.data?.email);
+  // console.log(data?.data?.email);
 
   return (
     <header className="border-b px-4 md:px-6">
