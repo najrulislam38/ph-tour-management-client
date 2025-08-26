@@ -26,18 +26,38 @@ axiosInstance.interceptors.request.use(
   }
 );
 
+let isRefreshing = false;
+
+const pendingQueue: {
+  resolve: (value, unknown) => void;
+  reject: (value, unknown) => void;
+}[] = [];
 // Add a response interceptor
 axiosInstance.interceptors.response.use(
-  function onFulfilled(response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    // console.log("Axios", response);
-
+  (response) => {
     return response;
   },
-  function onRejected(error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return Promise.reject(error);
+  async (error) => {
+    const originalRequest = error.config;
+
+    isRefreshing = true;
+
+    // console.log(originalRequest);
+    if (
+      error.response.status === 500 &&
+      error.response.data.message === "jwt expired"
+    ) {
+      console.log("Your token is expired");
+
+      try {
+        const res = await axiosInstance.post("/auth/refresh-token");
+
+        console.log("New Token arrived", res);
+
+        return axiosInstance(originalRequest);
+      } catch (error) {
+        console.error(error);
+      }
+    }
   }
 );
