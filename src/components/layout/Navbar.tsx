@@ -15,19 +15,25 @@ import { ModeToggle } from "./ModeToggler";
 import { Link } from "react-router";
 import {
   authApi,
-  useGetMeQuery,
   useLogoutMutation,
+  useUserInfoQuery,
 } from "@/redux/features/auth/auth.api";
 import { useDispatch } from "react-redux";
+import { role } from "@/constants/role";
+import React from "react";
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
+  { href: "/", label: "Home", role: "PUBLIC" },
+  { href: "/about", label: "About", role: "PUBLIC" },
+  { href: "/tours", label: "Tours", role: "PUBLIC" },
+  { href: "/admin", label: "dashboard", role: role.admin },
+  { href: "/admin", label: "dashboard", role: role.superAdmin },
+  { href: "/user", label: "dashboard", role: role.user },
 ];
 
 export default function Navbar() {
-  const { data } = useGetMeQuery(undefined);
+  const { data } = useUserInfoQuery(undefined);
   const [logout] = useLogoutMutation();
   const dispatch = useDispatch();
 
@@ -42,7 +48,7 @@ export default function Navbar() {
       });
   };
 
-  console.log(data?.data?.email);
+  // console.log(data?.data?.email);
 
   return (
     <header className="border-b px-4 md:px-6">
@@ -107,14 +113,28 @@ export default function Navbar() {
             <NavigationMenu className="max-md:hidden">
               <NavigationMenuList className="gap-2">
                 {navigationLinks.map((link, index) => (
-                  <NavigationMenuItem key={index}>
-                    <NavigationMenuLink
-                      asChild
-                      className="text-muted-foreground hover:text-primary py-1.5 font-medium"
-                    >
-                      <Link to={link.href}>{link.label}</Link>
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
+                  <React.Fragment key={index}>
+                    {link.role === "PUBLIC" && (
+                      <NavigationMenuItem>
+                        <NavigationMenuLink
+                          asChild
+                          className="text-muted-foreground hover:text-primary py-1.5 font-medium"
+                        >
+                          <Link to={link.href}>{link.label}</Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    )}
+                    {link.role === data?.data?.role && (
+                      <NavigationMenuItem key={index}>
+                        <NavigationMenuLink
+                          asChild
+                          className="text-muted-foreground hover:text-primary py-1.5 font-medium"
+                        >
+                          <Link to={link.href}>{link.label}</Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    )}
+                  </React.Fragment>
                 ))}
               </NavigationMenuList>
             </NavigationMenu>
